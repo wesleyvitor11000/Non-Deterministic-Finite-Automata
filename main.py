@@ -11,15 +11,22 @@ def applyTransition(symbol, atualStates, AFNe, emptyTransition = False):
 
     return nextStates
 
-def applyEmptyTransition(atualStates, AFNe):
-    return applyTransition('ε', atualStates, AFNe, True)
+def applyEmptyTransitions(atualStates, AFNe):
+    lastSize = 0
+    nextStates = atualStates
+
+    while not lastSize == len(nextStates ):
+        lastSize = len(nextStates)
+        nextStates = applyTransition('ε', atualStates, AFNe, True)
+
+    return nextStates
 
 def wordRecognition(word, initialState, finalStates, AFNe):
     nextStates = [initialState]
     print(f"{nextStates}")
 
     for c in word:
-        nextStates = applyEmptyTransition(nextStates, AFNe)
+        nextStates = applyEmptyTransitions(nextStates, AFNe)
         print(f"ε -> {nextStates}")
         nextStates = applyTransition(c, nextStates, AFNe)
         print(f"{c} -> {nextStates}")
