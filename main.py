@@ -43,10 +43,12 @@ def main():
         1:{ 'ε':[2],
             'b':[3]},
 
-        2:{ 'a':[1]},
+        2:{ 'a':[1],
+            'ε':[3]},
 
         3:{ 'a':[2],
-            'b':[3, 2]}
+            'b':[3, 2],
+            'ε':[1]}
     }
 
     print("Palavra reconhecida." if wordRecognition(word, initialState, finalStates, AFNe) 
