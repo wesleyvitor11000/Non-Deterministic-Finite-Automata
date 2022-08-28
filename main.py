@@ -1,23 +1,22 @@
 def applyTransition(symbol, atualStates, AFNe, emptyTransition = False):
-    nextStates = atualStates if emptyTransition else []
+    nextStates = set(atualStates) if emptyTransition else set()
     
     for state in atualStates:
         stateTransitions = AFNe[state]
-        apliedStates = stateTransitions[symbol] if symbol in stateTransitions else []
+        apliedStates = set(stateTransitions[symbol] if symbol in stateTransitions else [])
 
         for appliedState in apliedStates:
-            if not appliedState in nextStates:
-                nextStates.append(appliedState)
+            nextStates.add(appliedState)
 
     return nextStates
 
 def applyEmptyTransitions(atualStates, AFNe):
     lastSize = 0
-    nextStates = atualStates
+    nextStates = set(atualStates)
 
-    while not lastSize == len(nextStates ):
+    while not lastSize == len(nextStates):
         lastSize = len(nextStates)
-        nextStates = applyTransition('ε', atualStates, AFNe, True)
+        nextStates = applyTransition('ε', nextStates, AFNe, True)
 
     return nextStates
 
@@ -33,26 +32,27 @@ def wordRecognition(word, initialState, finalStates, AFNe):
 
     return any((True for state in nextStates if state in finalStates))
 
-def convertToAFN(AFNe : dict, finalStates):
+def convertToAFN(AFNe : dict, finalStates : set):
 
     AFN = {}
-    finals = finalStates
+    finals = set(finalStates)
 
     for k in AFNe.keys():
-        print(f"alcançáveis por: {k}")
+        print(f"alcançáveis por {k}:")
         nodes = applyEmptyTransitions([k], AFNe)
-        nodes.__delitem__(0)
+        nodes.remove(k)
 
         for n in nodes:
-            if n in finalStates and not k in finals:
-                finals.append(k)
+            if n in finalStates:
+                finals.add(k)
+            print(n)
 
-    print(f"nós finais : {finals}")
+    print(f"\nnós finais : {finals}")
     return AFN, finals
 
 def main():
-    initialState = 1
-    finalStates = [2]
+    initialState = 0
+    finalStates = set([1])
     word = "bbaa"
 
     '''AFNe = { 
@@ -79,6 +79,7 @@ def main():
     print("convertendo:")
     convertToAFN(AFNe, finalStates)
 
+    print(f"\nreconhecendo {word}")
     print("Palavra reconhecida." if wordRecognition(word, initialState, finalStates, AFNe) 
     else "Palavra não reconhecida")
 
