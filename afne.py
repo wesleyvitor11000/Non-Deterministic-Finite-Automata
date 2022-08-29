@@ -75,11 +75,12 @@ class FSMε:
         newF = set(self.F)
         newδ = dict()
         
+
         for q, t in self.δ.items():
             newδ[q] = dict()
             for symbol, transitions in t.items():
                 if symbol != 'ε':
-                    newδ[symbol] = transitions
+                    newδ[q][symbol] = transitions
         
         for q in self.Q:
             reachable = self._εReachable({ q })
@@ -96,7 +97,7 @@ class FSMε:
 
 
 def main():
-    word = "abbab"
+    word = "abba"
     
     Q = { 0, 1, 2 }
     Σ = { 'a', 'b' }
